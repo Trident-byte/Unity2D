@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -69,8 +70,8 @@ public class player : MonoBehaviour
     {
         if (other.gameObject.CompareTag("EnemyBullet"))
         {
-            hit();
-            SpawnDamageParticles();
+            Hit();
+            SpawnDamageParticles(other.gameObject.transform.eulerAngles);
             Destroy(other.gameObject);
         }
 
@@ -90,7 +91,7 @@ public class player : MonoBehaviour
         }
     }
 
-    public void hit()
+    public void Hit()
     {
         curHealth--;
         // Debug.Log(curHealth);
@@ -102,8 +103,37 @@ public class player : MonoBehaviour
         HealthBar.healthBar.changeBar(maxHealth, curHealth);
     }
 
-    protected void SpawnDamageParticles()
+    public bool GetPowerUP(GameObject powerUP, float cost)
     {
-        damageParticlesInstance = Instantiate(damageParticles, transform.position, Quaternion.identity);
+        if (coins > cost)
+        {
+            GameObject newPower = Instantiate(powerUP, transform.position, Quaternion.identity);
+            newPower.transform.SetParent(transform);
+            Spending(cost);
+            return true;
+        }
+        return false;
+    }
+
+    protected void SpawnDamageParticles(Vector3 bulletAngle)
+    {
+        Quaternion angle = Quaternion.Euler(0, 0, bulletAngle.z + 90);
+        damageParticlesInstance = Instantiate(damageParticles, transform.position, angle);
+    }
+
+    public void setSpeed(double multiplier)
+    {
+        speed = (int)(speed * multiplier);
+    }
+
+    public void Spending(float cost)
+    {
+        coins -= cost;
+        CoinText.coinText.updateCounter(coins);
+    }
+
+    public float ReturnMoney()
+    {
+        return coins;
     }
 }

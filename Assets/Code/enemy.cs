@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class enemy : MonoBehaviour
@@ -60,34 +61,39 @@ public class enemy : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            player.curPlayer.hit();
+            player.curPlayer.Hit();
             SpawnDamageParticles(other.gameObject.transform.eulerAngles);
             Destroy(this.gameObject);
             target = null;
+            RoundUI.roundUI.updateEnemies();
         }
         else if (other.gameObject.CompareTag("Bullet"))
         {
-            LevelManager.manager.IncreaaseScore(1);
-            SpawnDamageParticles(other.gameObject.transform.eulerAngles);
-            Debug.Log(other.gameObject.transform.rotation);
-            Destroy(other.gameObject);
-            int randInt = UnityEngine.Random.Range(0, 100);
-            if (randInt < 2)
-            {
-                Instantiate(healthPrefab, transform.position, Quaternion.identity);
-            }
-            else if (randInt < 12)
-            {
-                Instantiate(moneyPrefab, transform.position, Quaternion.identity);
-            }
-            Destroy(this.gameObject);
+            Hit(other.gameObject);
+            RoundUI.roundUI.updateEnemies();
         }
+    }
+
+    public void Hit(GameObject attacker)
+    {
+        LevelManager.manager.IncreaaseScore(1);
+        SpawnDamageParticles(attacker.transform.eulerAngles);
+        Destroy(attacker);
+        int randInt = UnityEngine.Random.Range(0, 100);
+        if (randInt < 2)
+        {
+            Instantiate(healthPrefab, transform.position, Quaternion.identity);
+        }
+        else if (randInt < 50)
+        {
+            Instantiate(moneyPrefab, transform.position, Quaternion.identity);
+        }
+        Destroy(gameObject);
     }
 
     protected void SpawnDamageParticles(Vector3 bulletAngle)
     {
         Quaternion angle = Quaternion.Euler(0, 0, bulletAngle.z + 90);
-        Debug.Log(angle);
         damageParticlesInstance = Instantiate(damageParticles, transform.position, angle);
     }
 }

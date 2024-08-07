@@ -13,9 +13,14 @@ public class LevelManager : MonoBehaviour
     public TextMeshProUGUI highScoreText;
     public GameObject deathScreen;
     [SerializeField] GameObject[] obstacles;
+    [SerializeField] GameObject shop;
+    [SerializeField] GameObject[] shopItems;
 
     public SaveData data;
     public int curScore;
+
+    private int round;
+    private int enemies;
 
     private void Awake()
     {
@@ -23,6 +28,18 @@ public class LevelManager : MonoBehaviour
         SaveSystem.Initalize();
         GenerateObjects(50);
         data = new SaveData(0);
+        round = 1;
+    }
+
+    public void newRound()
+    {
+        shop.SetActive(false);
+        Time.timeScale = 1;
+        enemies = (round - 1) * 2 + 10;
+        round += 1;
+        RoundUI.roundUI.changeRound(enemies);
+        Shop.shop.Reset();
+        Shop.shop.ResetCost();
     }
 
     public void GameOver()
