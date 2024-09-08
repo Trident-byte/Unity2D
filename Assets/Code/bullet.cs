@@ -9,9 +9,9 @@ public class bullet : MonoBehaviour
     [SerializeField] private float speed = 10f;
 
     [Range(1, 10)]
-    [SerializeField] private float lifeTime = 1f;
+    [SerializeField] protected float lifeTime = 1f;
 
-    private Rigidbody2D rb;
+    protected Rigidbody2D rb;
 
     private void Start()
     {
@@ -19,7 +19,7 @@ public class bullet : MonoBehaviour
         Destroy(gameObject, lifeTime);
     }
 
-    private void FixedUpdate()
+    protected void FixedUpdate()
     {
         rb.velocity = transform.up * speed;
 

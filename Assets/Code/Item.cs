@@ -9,6 +9,7 @@ public class Item : MonoBehaviour
     [SerializeField] protected int cost;
     [SerializeField] protected String itemName;
     [SerializeField] protected String description;
+    public Boolean onetime;
 
     public Sprite returnSprite()
     {

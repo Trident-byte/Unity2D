@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design.Serialization;
@@ -14,7 +15,13 @@ public class player : MonoBehaviour
     [SerializeField] private Transform firingPoint;
     [Range(0.1f, 1f)]
     [SerializeField] private float fireRate = 0.5f;
+    [SerializeField] private float dashCooldown = 1f;
     [SerializeField] private float maxHealth = 10;
+    [SerializeField] private AudioSource laserAudio;
+    [SerializeField] private AudioSource walking;
+    [SerializeField] private float dashSpeed = 5;
+    [SerializeField] private GameObject playerUI;
+    private Boolean canDash;
     public float curHealth = 0;
     public float coins = 0;
 
@@ -23,8 +30,10 @@ public class player : MonoBehaviour
     private Rigidbody2D rb;
 
     private float fireTimer;
+    private float dashTimer;
     private Vector2 mosPos;
     [SerializeField] protected ParticleSystem damageParticles;
+    [SerializeField] protected ParticleSystem dashParticles;
     protected ParticleSystem damageParticlesInstance;
     // Start is called before the first frame update
     void Start()
@@ -33,6 +42,8 @@ public class player : MonoBehaviour
         fireTimer = fireRate;
         curPlayer = this;
         curHealth = maxHealth;
+        canDash = false;
+        coins = 20;
     }
 
     // Update is called once per frame
@@ -45,7 +56,7 @@ public class player : MonoBehaviour
 
         transform.localRotation = Quaternion.Euler(0, 0, angle);
 
-        if (Input.GetMouseButton(0) && fireTimer <= 0f)
+        if (Input.GetMouseButtonDown(0) && fireTimer <= 0f)
         {
             Shoot();
             fireTimer = fireRate;
@@ -54,16 +65,41 @@ public class player : MonoBehaviour
         {
             fireTimer -= Time.deltaTime;
         }
+
+        if (Input.GetKeyDown(KeyCode.Q) && dashTimer <= 0f && canDash)
+        {
+            Dash();
+            dashTimer = dashCooldown;
+            DashBar.dashbar.changeBar(dashCooldown, Mathf.Min(dashCooldown - dashTimer, dashCooldown));
+        }
+        else if (canDash)
+        {
+            dashTimer -= Time.deltaTime;
+            DashBar.dashbar.changeBar(dashCooldown, Mathf.Min(dashCooldown - dashTimer, dashCooldown));
+        }
     }
 
     private void FixedUpdate()
     {
         rb.velocity = new Vector2(mx, my).normalized * speed;
+        if (rb.velocity != Vector2.zero && !walking.isPlaying)
+        {
+            walking.Play();
+        }
     }
 
     private void Shoot()
     {
         Instantiate(bulletPrefab, firingPoint.position, firingPoint.rotation);
+        laserAudio.Play();
+
+    }
+
+    private void Dash()
+    {
+        Vector3 dashVector = new Vector3(mx, my, 0).normalized;
+        Instantiate(dashParticles, transform.position, Quaternion.Euler(dashVector.x, dashVector.y, dashVector.z));
+        transform.position += new Vector3(mx, my, 0).normalized * dashSpeed;
     }
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -94,10 +130,8 @@ public class player : MonoBehaviour
     public void Hit()
     {
         curHealth--;
-        // Debug.Log(curHealth);
         if (curHealth < 1)
         {
-            Debug.Log("ending");
             LevelManager.manager.GameOver();
         }
         HealthBar.healthBar.changeBar(maxHealth, curHealth);
@@ -115,15 +149,27 @@ public class player : MonoBehaviour
         return false;
     }
 
+    public void activateDash()
+    {
+        canDash = true;
+        PlayerUI playerUIScript = playerUI.GetComponent<PlayerUI>();
+        playerUIScript.ActivateBar();
+    }
+
     protected void SpawnDamageParticles(Vector3 bulletAngle)
     {
-        Quaternion angle = Quaternion.Euler(0, 0, bulletAngle.z + 90);
+        Quaternion angle = Quaternion.Euler(0, 0, bulletAngle.z + 180);
         damageParticlesInstance = Instantiate(damageParticles, transform.position, angle);
     }
 
     public void setSpeed(double multiplier)
     {
-        speed = (int)(speed * multiplier);
+        speed = Mathf.Max((int)(speed * multiplier), 10);
+    }
+
+    public void increaseFireRate(double multiplier)
+    {
+        fireRate = Mathf.Min((float)(fireRate * multiplier), (float)0.1);
     }
 
     public void Spending(float cost)
@@ -135,5 +181,10 @@ public class player : MonoBehaviour
     public float ReturnMoney()
     {
         return coins;
+    }
+
+    public void switchBulletType(GameObject newBullet)
+    {
+        bulletPrefab = newBullet;
     }
 }

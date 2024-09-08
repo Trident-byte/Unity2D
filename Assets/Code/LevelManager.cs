@@ -38,8 +38,11 @@ public class LevelManager : MonoBehaviour
         enemies = (round - 1) * 2 + 10;
         round += 1;
         RoundUI.roundUI.changeRound(enemies);
-        Shop.shop.Reset();
-        Shop.shop.ResetCost();
+        if (Shop.shop != null)
+        {
+            Shop.shop.Reset();
+            Shop.shop.ResetCost();
+        }
     }
 
     public void GameOver()

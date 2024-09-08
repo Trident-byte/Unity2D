@@ -9,6 +9,7 @@ public class rangedEnemy : enemy
     public float distanceToStop = 5f;
 
     [SerializeField] private float fireRate;
+    [SerializeField] private AudioSource shooting;
     private float timeToFire;
     public Transform firingPoint;
     public GameObject bulletPrefab;
@@ -51,6 +52,7 @@ public class rangedEnemy : enemy
         if (timeToFire <= 0f)
         {
             Instantiate(bulletPrefab, firingPoint.position, firingPoint.rotation);
+            shooting.Play();
             timeToFire = fireRate;
         }
         else

@@ -67,10 +67,19 @@ public class enemy : MonoBehaviour
             target = null;
             RoundUI.roundUI.updateEnemies();
         }
-        else if (other.gameObject.CompareTag("Bullet"))
+        else if (other.gameObject.CompareTag("Bullet") || other.gameObject.CompareTag("Explosive Bullet"))
         {
             Hit(other.gameObject);
             RoundUI.roundUI.updateEnemies();
+            if (other.gameObject.CompareTag("Explosive Bullet"))
+            {
+                ExplosiveBullet explosiveBullet = other.gameObject.GetComponent<ExplosiveBullet>();
+                explosiveBullet.Explosion();
+            }
+            else
+            {
+                Destroy(other.gameObject);
+            }
         }
     }
 
@@ -78,7 +87,6 @@ public class enemy : MonoBehaviour
     {
         LevelManager.manager.IncreaaseScore(1);
         SpawnDamageParticles(attacker.transform.eulerAngles);
-        Destroy(attacker);
         int randInt = UnityEngine.Random.Range(0, 100);
         if (randInt < 2)
         {

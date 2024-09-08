@@ -9,6 +9,8 @@ TagManager:
   - Health
   - Coin
   - Enemy
+  - Explosive Bullet
+  - Explosion
   layers:
   - Default
   - TransparentFX
@@ -21,7 +23,7 @@ TagManager:
   - Minimap
   - Enemy
   - Player
-  - 
+  - Explosive
   - 
   - 
   - 

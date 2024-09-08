@@ -5,16 +5,19 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Rendering;
 
 public class ShopOption : MonoBehaviour
 {
-    [SerializeField] protected GameObject[] items;
     private GameObject item;
     [SerializeField] private Button option;
     [SerializeField] private TextMeshProUGUI itemName;
     private int cost;
     [SerializeField] private TextMeshProUGUI price;
     [SerializeField] private TextMeshProUGUI description;
+    [SerializeField] private ItemList itemList;
+    private int randObject;
+    private List<GameObject> items;
 
     // Start is called before the first frame update
     void Start()
@@ -24,7 +27,8 @@ public class ShopOption : MonoBehaviour
 
     public void SetItem()
     {
-        int randObject = UnityEngine.Random.Range(0, items.Length);
+        items = itemList.RetrieveList();
+        randObject = UnityEngine.Random.Range(0, items.Count);
         item = items[randObject];
         Item itemScript = item.GetComponent<Item>();
         String[] descriptors = itemScript.returnDescriptors();
@@ -37,11 +41,17 @@ public class ShopOption : MonoBehaviour
 
     public void GetPowerUP()
     {
-        bool bought = false;
-        bought = player.curPlayer.GetPowerUP(item, cost);
+        bool bought = player.curPlayer.GetPowerUP(item, cost);
         if (bought)
         {
+            Item itemScript = item.GetComponent<Item>();
+            if (itemScript.onetime == true)
+            {
+                itemList.RemoveItem(item);
+                Debug.Log("removing");
+            }
             LevelManager.manager.newRound();
         }
+
     }
 }
