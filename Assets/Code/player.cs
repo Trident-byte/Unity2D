@@ -11,17 +11,18 @@ public class player : MonoBehaviour
     public static player curPlayer;
 
     //Gun vars
-    [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private GameObject weapon;
     [SerializeField] private Transform firingPoint;
     [Range(0.1f, 1f)]
     [SerializeField] private float fireRate = 0.5f;
     [SerializeField] private float dashCooldown = 1f;
     [SerializeField] private float maxHealth = 10;
-    [SerializeField] private AudioSource laserAudio;
     [SerializeField] private AudioSource walking;
     [SerializeField] private float dashSpeed = 5;
     [SerializeField] private GameObject playerUI;
     private Boolean canDash;
+    private Boolean hasExplosive;
+    private double fireRateMultiplier;
     public float curHealth = 0;
     public float coins = 0;
 
@@ -44,6 +45,8 @@ public class player : MonoBehaviour
         curHealth = maxHealth;
         canDash = false;
         coins = 20;
+        fireRateMultiplier = 1;
+        hasExplosive = false;
     }
 
     // Update is called once per frame
@@ -90,8 +93,8 @@ public class player : MonoBehaviour
 
     private void Shoot()
     {
-        Instantiate(bulletPrefab, firingPoint.position, firingPoint.rotation);
-        laserAudio.Play();
+        Gun gun = weapon.GetComponent<Gun>();
+        gun.Shoot(hasExplosive);
 
     }
 
@@ -137,6 +140,7 @@ public class player : MonoBehaviour
         HealthBar.healthBar.changeBar(maxHealth, curHealth);
     }
 
+    //Gives the player the powerup and checks to see if the player has enough money
     public bool GetPowerUP(GameObject powerUP, float cost)
     {
         if (coins > cost)
@@ -149,6 +153,7 @@ public class player : MonoBehaviour
         return false;
     }
 
+    //Used if the player has the dash powerup
     public void activateDash()
     {
         canDash = true;
@@ -167,9 +172,11 @@ public class player : MonoBehaviour
         speed = Mathf.Max((int)(speed * multiplier), 10);
     }
 
-    public void increaseFireRate(double multiplier)
+    public void changeFireRate(double multiplier)
     {
-        fireRate = Mathf.Min((float)(fireRate * multiplier), (float)0.1);
+        fireRateMultiplier *= multiplier;
+        Gun gun = weapon.GetComponent<Gun>();
+        fireRate = Mathf.Min((float)(gun.getFireRate() * fireRateMultiplier), (float)0.1);
     }
 
     public void Spending(float cost)
@@ -183,8 +190,8 @@ public class player : MonoBehaviour
         return coins;
     }
 
-    public void switchBulletType(GameObject newBullet)
+    public void switchBulletType(Boolean hasExplosive)
     {
-        bulletPrefab = newBullet;
+        this.hasExplosive = hasExplosive;
     }
 }
