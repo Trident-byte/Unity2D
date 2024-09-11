@@ -355,11 +355,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3784262788733249857, guid: a4a87f3faba0d954aba8999037ae68a6, type: 3}
   m_PrefabInstance: {fileID: 930014710}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &1103646168 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1097946374442505126, guid: 64a600374dfb50a4fa1b4addeeb9449a, type: 3}
-  m_PrefabInstance: {fileID: 1749272118100482365}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1305054293
 GameObject:
   m_ObjectHideFlags: 0
@@ -631,7 +626,7 @@ MonoBehaviour:
   highScoreText: {fileID: 466337859}
   deathScreen: {fileID: 1849777974}
   obstacles:
-  - {fileID: 381144779813538697, guid: d3cc9701716132a4b8f6f541a6144e0d, type: 3}
+  - {fileID: 2977092550601015381, guid: b0f561c87ba8c294682b05ab6350cc5c, type: 3}
   - {fileID: 5143969026945440247, guid: e6586e12023aa69499d733b1425921a7, type: 3}
   shop: {fileID: 1776453560}
   shopItems: []
@@ -707,7 +702,7 @@ PrefabInstance:
     - target: {fileID: 263915923743266409, guid: 64a600374dfb50a4fa1b4addeeb9449a, type: 3}
       propertyPath: firingPoint
       value: 
-      objectReference: {fileID: 1103646168}
+      objectReference: {fileID: 0}
     - target: {fileID: 263915923743266409, guid: 64a600374dfb50a4fa1b4addeeb9449a, type: 3}
       propertyPath: bulletPrefab
       value: 

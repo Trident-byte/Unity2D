@@ -12,7 +12,6 @@ public class player : MonoBehaviour
 
     //Gun vars
     [SerializeField] private GameObject weapon;
-    [SerializeField] private Transform firingPoint;
     [Range(0.1f, 1f)]
     [SerializeField] private float fireRate = 0.5f;
     [SerializeField] private float dashCooldown = 1f;
@@ -20,6 +19,7 @@ public class player : MonoBehaviour
     [SerializeField] private AudioSource walking;
     [SerializeField] private float dashSpeed = 5;
     [SerializeField] private GameObject playerUI;
+    [SerializeField] private Transform gunPosition;
     private Boolean canDash;
     private Boolean hasExplosive;
     private double fireRateMultiplier;
@@ -33,6 +33,7 @@ public class player : MonoBehaviour
     private float fireTimer;
     private float dashTimer;
     private Vector2 mosPos;
+    private GameObject currentWeapon;
     [SerializeField] protected ParticleSystem damageParticles;
     [SerializeField] protected ParticleSystem dashParticles;
     protected ParticleSystem damageParticlesInstance;
@@ -47,6 +48,8 @@ public class player : MonoBehaviour
         coins = 20;
         fireRateMultiplier = 1;
         hasExplosive = false;
+        currentWeapon = Instantiate(weapon, gunPosition.position, gunPosition.rotation);
+        currentWeapon.transform.SetParent(transform);
     }
 
     // Update is called once per frame
@@ -94,7 +97,7 @@ public class player : MonoBehaviour
     private void Shoot()
     {
         Gun gun = weapon.GetComponent<Gun>();
-        gun.Shoot(hasExplosive);
+        gun.Shoot(hasExplosive, gunPosition.transform);
 
     }
 
