@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 537082118560273322}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.3, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -269,7 +269,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 6274582237134837914, guid: 918a075fc31fe6341812462286d3fd2f, type: 3}
   explosivePrefab: {fileID: 557331580855370695, guid: fccf8cd7676307042bfc3280fd3bf265, type: 3}
-  fireRate: 1
+  fireRate: 20
   firingPoint: {fileID: 7134256158078220923}
   firingAudio: {fileID: 2533883468395890489}
 --- !u!1 &8896926976881005840

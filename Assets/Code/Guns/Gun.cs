@@ -12,9 +12,9 @@ public class Gun : MonoBehaviour
     [SerializeField] protected AudioSource firingAudio;
     private Vector3 test;
 
-    public void Shoot(bool hasExplosive, Transform player)
+    public virtual void Shoot(bool hasExplosive, Transform player)
     {
-        Debug.Log(transform.position.Equals(test));
+        Debug.Log(transform.position);
         Debug.Log(test);
         if (hasExplosive)
         {
